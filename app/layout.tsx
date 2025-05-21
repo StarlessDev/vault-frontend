@@ -6,7 +6,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Vault",
-  description: "",
+  description: "Protect important files with ease.",
 };
 
 export default function RootLayout({

@@ -3,7 +3,6 @@ export default function CopyIcon(props: React.SVGProps<SVGSVGElement>) {
     <svg
       viewBox="0 0 24 24"
       stroke="currentColor"
-      fill="none"
       {...props}
     >
       {/* Back document (shadow) */}

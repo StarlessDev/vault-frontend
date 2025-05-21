@@ -16,8 +16,14 @@ import EncryptedFileIcon from './components/icons/encryptedfile';
 
 import { Loader2 } from 'lucide-react';
 import CopyIcon from './components/icons/copy';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+
+interface IndexedFile extends File {
+  index: number;
+}
 
 interface UploadedFile {
+  index: number;
   name: string;
   id: string;
   url: string;
@@ -25,7 +31,7 @@ interface UploadedFile {
 
 export default function Home() {
   // File states
-  const [fileQueue, setFileQueue] = useState<File[]>([]);
+  const [fileQueue, setFileQueue] = useState<IndexedFile[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -65,7 +71,12 @@ export default function Home() {
 
   const handleFileUpload = (uploadedFiles: File[]): void => {
     if (uploadedFiles.length > 0) {
-      setFileQueue(prev => [...prev, ...uploadedFiles]);
+      const indexedFiles: IndexedFile[] = uploadedFiles.map((file, idx) => {
+        const idxFile: IndexedFile = file as IndexedFile
+        idxFile.index = Math.random() * 1000
+        return idxFile
+      })
+      setFileQueue(prev => [...prev, ...indexedFiles]);
     }
   };
 
@@ -80,7 +91,7 @@ export default function Home() {
   };
 
   // Uploaded files logic
-  const [uploadedFiles] = useState<UploadedFile[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [uploading, setUploading] = useState<boolean>(false);
 
   const handleButtonPress = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -88,37 +99,48 @@ export default function Home() {
     e.preventDefault();
     setUploading(true);
 
-    const data = new FormData();
-    for (const file of fileQueue) {
-      data.append('files[]', file, file.name);
-    }
-
     const API_BASE_URL: string = process.env.NEXT_PUBLIC_API_URL as string;
     const UPLOAD_URL: string = API_BASE_URL + "upload";
+    const uploads: Promise<UploadedFile | null>[] = fileQueue.map(queuedFile => {
+      const fetchBody = new FormData();
+      fetchBody.append('file', queuedFile, queuedFile.name);
 
-    fetch(UPLOAD_URL, {
-      method: 'POST',
-      body: data,
-      credentials: 'include',
-      mode: 'cors'
-    }).then(async (response) => {
-      if (response.ok) {
-        const fileData = await response.json();
-        for (const data of fileData) {
-          setFileQueue(fileQueue.filter((file) => file.name !== data.fileName));
+      return fetch(UPLOAD_URL, {
+        method: 'POST',
+        body: fetchBody,
+        credentials: 'include',
+        mode: 'cors'
+      }).then(async (response) => {
+        if (response.ok) {
+          const processedFiles: UploadedFile[] = await response.json();
+          if (processedFiles.length === 0) return null;
 
-          uploadedFiles.push({
-            name: data.fileName,
-            id: data.fileId,
-            url: API_BASE_URL + "download#" + data.fullKey
-          })
+          const uploadedFile: UploadedFile = processedFiles[0];
+          uploadedFile.index = queuedFile.index;
+          return uploadedFile;
         }
-      } else {
-        throw new Error('Network response was not ok');
-      }
-    }).finally(() => {
-      setUploading(false);
-    })
+        throw new Error('Upload failed');
+      });
+    });
+
+    // Handle all uploads
+    Promise.all(uploads)
+      .then(results => {
+        results.forEach(result => {
+          if (result) {
+            setUploadedFiles(prev => [...prev, result]);
+            setFileQueue(prev => prev.filter(f => f.index !== result.index));
+          }
+        });
+      })
+      .catch(_ => {
+        toast("Error", {
+          description: "The upload failed!"
+        });
+      })
+      .finally(() => {
+        setUploading(false);
+      });
   }
 
   // Adapted from https://stackoverflow.com/a/20732091
@@ -189,8 +211,10 @@ export default function Home() {
 
             <div className="flex flex-col gap-4 overflow-hidden shadow">
               {fileQueue.map((file, index) => (
-                <div key={index} className="flex items-center justify-between bg-[var(--sidebar)] rounded-xl border-solid border border-[var(--color-foregound)]/0.1 p-4">
+                // Outer square
+                <div key={index} className="flex items-center justify-between bg-[var(--sidebar)] rounded-xl border border-solid border-[var(--color-foregound)]/0.1 p-4">
                   <div className="flex items-center space-x-3">
+                    {/* Icon square, selected by file type */}
                     <div className="w-10 h-10 rounded-lg bg-zinc-700 flex items-center justify-center">
                       {file.type.startsWith('image/') ? (
                         <ImageIcon className="w-9 h-9 text-indigo-400" />
@@ -219,6 +243,7 @@ export default function Home() {
               ))}
             </div>
 
+            { /* Button loader logic to avoid spam uploads */}
             <div className="mt-6 flex justify-end">
               {uploading
                 ? (
@@ -237,32 +262,47 @@ export default function Home() {
         )}
 
         {uploadedFiles.length > 0 && (
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-3xl mx-auto ">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-medium">Uploaded files</h2>
               <span className="text-sm text-zinc-400">{uploadedFiles.length} file(s) ({fileQueue.length} remaining)</span>
             </div>
-            <ul>
+            <div className="flex flex-col gap-4 overflow-hidden shadow">
+              {/* Loop over the already uploaded files */}
               {uploadedFiles.map((file, index) => (
+                // Outer square
                 <div key={index} className="flex items-center justify-between bg-[var(--sidebar)] rounded-xl border-solid border border-[var(--color-foregound)]/0.1 p-4">
                   <div className="flex items-center space-x-3">
+                    {/* Icon square */}
                     <div className="w-10 h-10 rounded-lg bg-zinc-700 flex items-center justify-center">
                       <EncryptedFileIcon className="stroke-red-400" />
                     </div>
+                    {/** File name */}
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-medium truncate">{file.name}</h3>
                     </div>
                   </div>
-                  <button
-                    onClick={() => copyUrl(file)}
-                    className="ml-2 p-2 text-zinc-400 hover:text-zinc-200 rounded-full hover:bg-zinc-700 transition"
-                    aria-label="Remove file"
-                  >
-                    <CopyIcon className="w-7 h-7" />
-                  </button>
+
+                  {/* Add the tooltip to the button */}
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => copyUrl(file)}
+                          className="ml-2 p-2 text-zinc-400 hover:text-zinc-200 rounded-full hover:bg-zinc-700 transition"
+                          aria-label="Remove file"
+                        >
+                          <CopyIcon className="w-7 h-7" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p className="mb-1">Copy link</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </div>
               ))}
-            </ul>
+            </div>
           </div>
         )}
       </main>

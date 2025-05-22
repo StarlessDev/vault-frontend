@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "./components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
@@ -16,18 +15,11 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
+      <html className="scroll-smooth" lang="en" suppressHydrationWarning>
         <head />
         <body>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <Toaster />
-          </ThemeProvider>
+          {children}
+          <Toaster />
         </body>
       </html>
     </>

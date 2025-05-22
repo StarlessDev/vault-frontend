@@ -6,16 +6,16 @@ import { Button } from '@/components/ui/button';
 import { toast } from "sonner"
 
 
-import ImageIcon from './components/icons/image';
-import VideoIcon from './components/icons/video';
-import AudioIcon from './components/icons/audio';
-import FileIcon from './components/icons/file';
-import BinIcon from './components/icons/bin';
-import UploadIcon from './components/icons/upload';
-import EncryptedFileIcon from './components/icons/encryptedfile';
+import ImageIcon from '@/components/icons/image';
+import VideoIcon from '@/components/icons/video';
+import AudioIcon from '@/components/icons/audio';
+import FileIcon from '@/components/icons/file';
+import BinIcon from '@/components/icons/bin';
+import UploadIcon from '@/components/icons/upload';
+import EncryptedFileIcon from '@/components/icons/encryptedfile';
 
 import { Loader2 } from 'lucide-react';
-import CopyIcon from './components/icons/copy';
+import CopyIcon from '../components/icons/copy';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface IndexedFile extends File {
@@ -162,12 +162,12 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       <Head>
-        <title>File Upload</title>
+        <title>Dashboard - Upload</title>
         <meta name="description" content="File upload with drag and drop" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="container mx-auto px-4 py-10">
+      <main className="mx-auto px-4 py-10">
         <div className="max-w-3xl mx-auto mb-8">
           <div
             className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all duration-300 ${isDragging

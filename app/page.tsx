@@ -16,8 +16,11 @@ export default function Landing() {
         </div>
 
         <div className="flex flex-col md:flex-row justify-center gap-4 mt-10">
-          <Button className="rounded hover:cursor-pointer text-xl py-6 px-8 w-full md:w-auto">
-            Get started
+          <Button
+            className="rounded hover:cursor-pointer text-xl py-6 px-8 w-full md:w-auto"
+            asChild
+          >
+            <Link href="/auth">Get started</Link>
           </Button>
           <Button
             className="rounded hover:cursor-pointer text-xl py-6 px-8 w-full md:w-auto"

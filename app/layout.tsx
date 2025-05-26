@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
+import Header from "@/components/atoms/header";
 
 export const metadata: Metadata = {
   title: "Vault",
@@ -18,8 +19,9 @@ export default function RootLayout({
       <html className="scroll-smooth">
         <head />
         <body>
-          {children}
+          <Header />
           <Toaster />
+          {children}
         </body>
       </html>
     </>

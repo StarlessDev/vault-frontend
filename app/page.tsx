@@ -1,4 +1,4 @@
-import FeatureSquare from "@/components/containers/feature";
+import FeatureSquare from "@/components/atoms/featuresquare";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 

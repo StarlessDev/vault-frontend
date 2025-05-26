@@ -9,7 +9,7 @@ export default function Landing() {
         {/* Hero container */}
         <div className="text-center tracking-tighter text-balance">
           {/* https://design2tailwind.com/blog/tailwindcss-gradient-text/ */}
-          <h1 className="font-bold text-6xl p-4 mb-2 bg-gradient-to-r from-[var(--primary)] to-purple-400 inline-block text-transparent bg-clip-text">Protect Your Files with Military-Grade Encryption</h1>
+          <h1 className="font-bold text-6xl p-4 mb-2 bg-gradient-to-r from-[var(--primary)] to-purple-300 inline-block text-transparent bg-clip-text">Protect Your Files with Military-Grade Encryption</h1>
           <p className="text-2xl text-gray-400">You deserve your right to privacy.
             <span className="text-[var(--primary)]"> Vault</span> encrypts your important data and hands you the key, no questions asked.
           </p>

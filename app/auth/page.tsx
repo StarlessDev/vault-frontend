@@ -233,7 +233,7 @@ export default function LoginPage() {
                         </FormItem>
                       )}
                     />
-                    <Button className="rounded hover:cursor-pointer" type="submit">Login</Button>
+                    <Button className="rounded hover:cursor-pointer" type="submit">Register</Button>
                   </form>
                 </Form>
               </CardContent>

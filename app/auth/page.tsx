@@ -176,7 +176,7 @@ export default function LoginPage() {
           <TabsContent value="register">
             <Card className="rounded">
               <CardHeader>
-                <CardTitle className="text-2xl">Login</CardTitle>
+                <CardTitle className="text-2xl">Register</CardTitle>
                 <CardDescription>Fill in your details.</CardDescription>
               </CardHeader>
               <CardContent>

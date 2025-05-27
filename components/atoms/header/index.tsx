@@ -1,5 +1,4 @@
 import Link from "next/link";
-import HeaderLink from "../headerlink";
 
 export default function Header() {
   return (

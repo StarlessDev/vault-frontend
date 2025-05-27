@@ -3,6 +3,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
 import Header from "@/components/atoms/header";
+import { AuthProvider } from "./context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Vault",
@@ -19,9 +20,11 @@ export default function RootLayout({
       <html className="scroll-smooth">
         <head />
         <body>
-          <Header />
-          <Toaster />
-          {children}
+          <AuthProvider>
+            <Toaster />
+            <Header />
+            {children}
+          </AuthProvider>
         </body>
       </html>
     </>

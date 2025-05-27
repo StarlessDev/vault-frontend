@@ -29,12 +29,15 @@ import {
   CardTitle
 } from "@/components/ui/card"
 import { toast } from "sonner"
-import { loginSchema, registerSchema } from "./formschemas"
 
-// Form schemas
+import { loginSchema, registerSchema } from "./formschemas"
+import { useAuth } from "../context/AuthContext"
+import { useRouter } from "next/navigation"
 
 export default function LoginPage() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const { login, register, isLoading, isAuthenticated } = useAuth();
+  const router = useRouter();
+
   const [mode, setMode] = useState<string>("login");
   const form = useForm<z.infer<typeof loginSchema> | z.infer<typeof registerSchema>>({
     resolver: zodResolver(mode === "login" ? loginSchema : registerSchema),
@@ -48,8 +51,13 @@ export default function LoginPage() {
     }
   });
 
+  if (isAuthenticated) {
+    router.push("/dashboard");
+    return;
+  }
+
   const cancelInteractionIfLoading = (e: React.MouseEvent) => {
-    if (loading) {
+    if (isLoading) {
       e.preventDefault();
       e.stopPropagation();
     }
@@ -59,56 +67,39 @@ export default function LoginPage() {
   const onValueChange = (mode: string) => {
     setMode(mode);
   }
-  const onSubmit = (values: any) => {
-    if (loading) return;
-    setLoading(true);
 
-    let url: string = (process.env.NEXT_PUBLIC_API_URL as string + "auth/");
-    let body;
+  const onSubmit = (values: any) => {
+    if (isLoading) return;
+
     // We could check types, but it's a real pain.
     if (mode === "login") {
-      url += "login";
-
       const loginData = values as z.infer<typeof loginSchema>
-      body = {
-        email: loginData.email,
-        password: loginData.password
-      };
+      login(loginData.email, loginData.password).then(() => {
+        if (isAuthenticated) {
+          router.push("/dashboard")
+        } else {
+          toast.error("Login failed!", {
+            description: "Check your credentials and retry."
+          })
+        }
+      })
     } else if (mode === "register") {
-      url += "register";
-
       const registerData = values as z.infer<typeof registerSchema>
-      body = {
-        username: registerData.username,
-        email: registerData.email,
-        password: registerData.password
-      };
+      register(registerData.username, registerData.email, registerData.password).then(() => {
+        if (isAuthenticated) {
+          router.push("/dashboard")
+        }
+      })
     } else {
       toast("Errore", { description: "Modalità del form non riconosciuta!" })
       return;
     }
-
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify(body)
-    }).then((response) => {
-      if (response.ok) {
-        toast("Logged in");
-      } else {
-        throw new Error("Codice di errore " + response.status);
-      }
-    }).catch((e: Error) => {
-      const description: string = e.message ?? e;
-      toast("Errore", { description: description })
-    }).finally(() => {
-      setLoading(false);
-    })
   }
 
   return (
     // grid-rows-[1fr,auto,1fr]: 
-    // auto -> per la riga centrare usa auto,
-    // 1fr per le altre due (spazio uguale)
+    // auto -> use auto for the central row
+    // 1fr for the other two (equal spacing)
     <div className="min-h-screen grid grid-rows-[1fr,auto,1fr]">
       <div className="flex justify-center row-start-2">
         <Tabs

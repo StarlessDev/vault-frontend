@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -51,10 +51,11 @@ export default function LoginPage() {
     }
   });
 
-  if (isAuthenticated) {
-    router.push("/dashboard");
-    return;
-  }
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, []);
 
   const cancelInteractionIfLoading = (e: React.MouseEvent) => {
     if (isLoading) {
@@ -109,21 +110,21 @@ export default function LoginPage() {
         >
           {/* Declare the possible tabs */}
           <TabsList
-            className="grid w-full grid-cols-2 rounded"
+            className="grid w-full grid-cols-2"
             onClick={cancelInteractionIfLoading}
           >
             <TabsTrigger
               value="login"
-              className="rounded hover:cursor-pointer">
+              className="hover:cursor-pointer">
               Login
             </TabsTrigger>
             <TabsTrigger
-              value="register" className="rounded hover:cursor-pointer">
+              value="register" className="hover:cursor-pointer">
               Register
             </TabsTrigger>
           </TabsList>
           <TabsContent value="login">
-            <Card className="rounded">
+            <Card>
               <CardHeader>
                 <CardTitle className="text-2xl">Login</CardTitle>
                 <CardDescription>Fill in your details.</CardDescription>
@@ -158,14 +159,14 @@ export default function LoginPage() {
                         </FormItem>
                       )}
                     />
-                    <Button className="rounded hover:cursor-pointer" type="submit">Login</Button>
+                    <Button className="hover:cursor-pointer" type="submit">Login</Button>
                   </form>
                 </Form>
               </CardContent>
             </Card>
           </TabsContent>
           <TabsContent value="register">
-            <Card className="rounded">
+            <Card>
               <CardHeader>
                 <CardTitle className="text-2xl">Register</CardTitle>
                 <CardDescription>Fill in your details.</CardDescription>
@@ -224,7 +225,7 @@ export default function LoginPage() {
                         </FormItem>
                       )}
                     />
-                    <Button className="rounded hover:cursor-pointer" type="submit">Register</Button>
+                    <Button className="hover:cursor-pointer" type="submit">Register</Button>
                   </form>
                 </Form>
               </CardContent>

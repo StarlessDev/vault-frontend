@@ -75,8 +75,8 @@ export default function LoginPage() {
     // We could check types, but it's a real pain.
     if (mode === "login") {
       const loginData = values as z.infer<typeof loginSchema>
-      login(loginData.email, loginData.password).then(() => {
-        if (isAuthenticated) {
+      login(loginData.email, loginData.password).then((logged) => {
+        if (logged) {
           router.push("/dashboard")
         } else {
           toast.error("Login failed!", {
@@ -86,9 +86,13 @@ export default function LoginPage() {
       })
     } else if (mode === "register") {
       const registerData = values as z.infer<typeof registerSchema>
-      register(registerData.username, registerData.email, registerData.password).then(() => {
-        if (isAuthenticated) {
+      register(registerData.username, registerData.email, registerData.password).then((registered) => {
+        if (registered) {
           router.push("/dashboard")
+        } else {
+          toast.error("Registration failed!", {
+            description: "Email or username already exists."
+          })
         }
       })
     } else {

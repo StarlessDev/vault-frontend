@@ -6,8 +6,8 @@ interface AuthContextType {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  register: (username: string, email: string, password: string) => Promise<void>;
-  login: (email: string, password: string) => Promise<void>;
+  register: (username: string, email: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => Promise<void>;
 }
 
@@ -19,6 +19,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  const BASE_API_ENDPOINT: string = process.env.NEXT_PUBLIC_API_URL as string;
   // weird javascript shenanigan:
   // (!user) "converts" the user to a boolean and inverts it (!)
   // and by adding another ! we invert the boolean again.
@@ -28,7 +29,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Initialize auth state on mount
   useEffect(() => {
     const checkLoginStatus = async () => {
-      await retrieveUser();
+      const fetchedUser: User|null = await retrieveUser();
+      setUser(fetchedUser);
     };
 
     checkLoginStatus();
@@ -36,18 +38,17 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
 
   // Get account info request
-  const retrieveUser = async (): Promise<void> => {
+  const retrieveUser = async (): Promise<User | null> => {
     setIsLoading(true);
 
-    const BASE_API_ENDPOINT: string = process.env.NEXT_PUBLIC_API_URL as string;
-    fetch(BASE_API_ENDPOINT + "account", {
+    return fetch(BASE_API_ENDPOINT + "account", {
       credentials: "include"
     }).then(async (response) => {
       if (response.ok) {
         const user: User = await response.json();
-        setUser(user);
+        return user;
       } else {
-        setUser(null);
+        return null;
       }
     }).finally(() => {
       setIsLoading(false);
@@ -55,11 +56,8 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   // Login logic
-  const login = async (email: string, password: string): Promise<void> => {
-    setIsLoading(true);
-
-    const BASE_API_ENDPOINT: string = process.env.NEXT_PUBLIC_API_URL as string;
-    fetch(BASE_API_ENDPOINT + "auth/login", {
+  const login = async (email: string, password: string): Promise<boolean> => {
+    return fetch(BASE_API_ENDPOINT + "auth/login", {
       method: "POST",
       body: JSON.stringify({
         email: email,
@@ -68,22 +66,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       credentials: "include"
     }).then(async (response) => {
       if (response.ok) {
-        const user: User = await response.json();
-        setUser(user);
+        const fetchedUser: User | null = await retrieveUser();
+        setUser(fetchedUser);
+        return true;
       } else {
         setUser(null);
+        return false;
       }
-    }).finally(() => {
-      setIsLoading(false);
-    })
+    });
   };
 
   // Register logic
-  const register = async (username: string, email: string, password: string): Promise<void> => {
-    setIsLoading(true);
-
-    const BASE_API_ENDPOINT: string = process.env.NEXT_PUBLIC_API_URL as string;
-    fetch(BASE_API_ENDPOINT + "auth/register", {
+  const register = (username: string, email: string, password: string): Promise<boolean> => {
+    return fetch(BASE_API_ENDPOINT + "auth/register", {
       method: "POST",
       body: JSON.stringify({
         username: username,
@@ -92,20 +87,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }),
       credentials: "include"
     }).then(async (response) => {
-      if (response.ok) {
-        const user: User = await response.json();
-        setUser(user);
+      const success: boolean = response.ok;
+      if (success) {
+        const fetchedUser: User|null = await retrieveUser();
+        setUser(fetchedUser);
       }
-    }).finally(() => {
-      setIsLoading(false);
-    })
+      return success;
+    });
   }
 
   // Logout logic
   const logout = async (): Promise<void> => {
     setIsLoading(true);
 
-    const BASE_API_ENDPOINT: string = process.env.NEXT_PUBLIC_API_URL as string;
     fetch(BASE_API_ENDPOINT + "auth/logout", {
       method: "POST",
       credentials: "include"

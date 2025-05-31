@@ -14,15 +14,14 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { CircleUserRound, EllipsisVertical, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 
 export default function UserDiv() {
-  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const router = useRouter();
 
   if (isLoading) {
     return (
-      <Loader/>
+      <Loader />
     );
   }
 
@@ -49,14 +48,17 @@ export default function UserDiv() {
         <DropdownMenuLabel>Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
-          <CircleUserRound className="stroke-[var(--foreground)]"/>
+          <CircleUserRound className="stroke-[var(--foreground)]" />
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem variant="destructive" onClick={() => logout() }>
-          <LogOut className="stroke-[var(--foreground)]"/>
+        <DropdownMenuItem variant="destructive" onClick={async () => {
+          await logout();
+          router.push("/auth");
+        }}>
+          <LogOut />
           Log out
         </DropdownMenuItem>
-      </DropdownMenuContent>  
+      </DropdownMenuContent>
     </DropdownMenu>
   );
 }

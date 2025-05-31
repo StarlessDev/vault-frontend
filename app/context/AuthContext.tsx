@@ -18,24 +18,27 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAuthenticated, setAuthenticated] = useState(false);
 
   const BASE_API_ENDPOINT: string = process.env.NEXT_PUBLIC_API_URL as string;
-  // weird javascript shenanigan:
-  // (!user) "converts" the user to a boolean and inverts it (!)
-  // and by adding another ! we invert the boolean again.
-  // If the user is null, this will return false.
-  const isAuthenticated = !!user;
 
   // Initialize auth state on mount
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const fetchedUser: User|null = await retrieveUser();
+      const fetchedUser: User | null = await retrieveUser();
       setUser(fetchedUser);
     };
 
     checkLoginStatus();
   }, []);
 
+  useEffect(() => {
+    // weird javascript shenanigan:
+    // (!user) "converts" the user to a boolean and inverts it (!)
+    // and by adding another ! we invert the boolean again.
+    // If the user is null, this will return false.
+    setAuthenticated(!!user);
+  }, [user]);
 
   // Get account info request
   const retrieveUser = async (): Promise<User | null> => {
@@ -89,7 +92,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }).then(async (response) => {
       const success: boolean = response.ok;
       if (success) {
-        const fetchedUser: User|null = await retrieveUser();
+        const fetchedUser: User | null = await retrieveUser();
         setUser(fetchedUser);
       }
       return success;
@@ -104,6 +107,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       method: "POST",
       credentials: "include"
     }).then(response => {
+      setUser(null);
       if (!response.ok) {
         throw new Error("Could not logout. Are you even logged in?")
       }

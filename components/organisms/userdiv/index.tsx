@@ -26,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { CircleUserRound, EllipsisVertical, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 export default function UserDiv() {
   const { user, refresh, logout } = useAuth();
@@ -90,12 +91,18 @@ export default function UserDiv() {
   const updatePreferences = async () => {
     // Send username update
     if (user?.username !== username) {
-      await fetch(BASE_API + "account/username", {
+      const response: Response = await fetch(BASE_API + "account/username", {
         method: "POST",
         body: JSON.stringify({ "username": username }),
         credentials: "include",
         mode: "cors"
       });
+      if (!response.ok) {
+        const body = await response.json();
+        toast("Could not update profile!", {
+          description: body["message"]
+        })
+      }
     }
 
     // Send avatar update

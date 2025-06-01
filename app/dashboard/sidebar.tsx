@@ -1,4 +1,4 @@
-import UserDiv from "@/components/atoms/userdiv"
+import UserDiv from "@/components/organisms/userdiv"
 import {
   Sidebar,
   SidebarContent,

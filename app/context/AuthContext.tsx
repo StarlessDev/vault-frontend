@@ -8,7 +8,8 @@ interface AuthContextType {
   isAuthenticated: boolean;
   register: (username: string, email: string, password: string) => Promise<boolean>;
   login: (email: string, password: string) => Promise<boolean>;
-  logout: () => Promise<void>;
+  refresh: () => Promise<void>;
+  logout: () => void;
 }
 
 // Create the context
@@ -22,14 +23,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const BASE_API_ENDPOINT: string = process.env.NEXT_PUBLIC_API_URL as string;
 
-  // Initialize auth state on mount
+  // Get user account on mount
   useEffect(() => {
-    const checkLoginStatus = async () => {
-      const fetchedUser: User | null = await retrieveUser();
-      setUser(fetchedUser);
-    };
-
-    checkLoginStatus();
+    const userUpdate = async () => {
+      await refreshTask();
+    }
+    userUpdate();
   }, []);
 
   useEffect(() => {
@@ -99,11 +98,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     });
   }
 
+  const refreshTask = () => {
+    return retrieveUser().then((user) => {
+      console.log("dio porco")
+      setUser(user);
+    })
+  }
+
   // Logout logic
-  const logout = async (): Promise<void> => {
+  const logout = (): Promise<void> => {
     setIsLoading(true);
 
-    fetch(BASE_API_ENDPOINT + "auth/logout", {
+    return fetch(BASE_API_ENDPOINT + "auth/logout", {
       method: "POST",
       credentials: "include"
     }).then(response => {
@@ -123,6 +129,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     isAuthenticated,
     login: login,
     logout,
+    refresh: refreshTask,
     register,
   };
 

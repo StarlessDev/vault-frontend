@@ -1,28 +1,25 @@
+import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-  // Check if requesting dashboard pages
-  if (request.nextUrl.pathname.startsWith('/dashboard')) {
-    // Check for auth cookie
-    const authCookie = request.cookies.get('session')  // replace 'session' with your actual cookie name
-    
-    if (!authCookie) {
-      // Redirect to login if no auth cookie found
-      return NextResponse.redirect(new URL('/auth', request.url))
-    }
+  // Get auth cookie
+  const pathName: string = request.nextUrl.pathname;
+  const authCookie: RequestCookie|undefined = request.cookies.get('session');
+
+  // When we are on the dashboard redirect to auth if
+  // no cookie is found
+  if (pathName.startsWith('/dashboard') && !authCookie) {
+    return NextResponse.redirect(new URL('/auth', request.url))
   }
 
-  // Check if accessing auth page while logged in
-  if (request.nextUrl.pathname.startsWith('/auth')) {
-    const authCookie = request.cookies.get('session')
-    
-    if (authCookie) {
-      // Redirect to dashboard if already authenticated
-      return NextResponse.redirect(new URL('/dashboard', request.url))
-    }
+  // When we are on the auth page and there is a
+  // cookie redirect to the dashboard
+  if (pathName.startsWith('/auth') && authCookie) {
+    return NextResponse.redirect(new URL('/dashboard', request.url))
   }
 
+  // Otherwise forward the request
   return NextResponse.next()
 }
 

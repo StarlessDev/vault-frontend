@@ -160,14 +160,14 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen">
+    <div>
       <Head>
         <title>Dashboard - Upload</title>
         <meta name="description" content="File upload with drag and drop" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className="mx-auto px-4 py-10">
+      <div className="container mx-auto px-4 py-10">
         <div className="max-w-3xl mx-auto mb-8">
           <div
             className={`border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all duration-300 ${isDragging
@@ -203,7 +203,7 @@ export default function Home() {
         </div>
 
         {fileQueue.length > 0 && (
-          <div className="max-w-3xl mx-auto mb-8 border-[var(--color-foreground)]">
+          <div className="max-w-3xl mx-auto mb-8">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-medium">File Queue</h2>
               <span className="text-sm text-zinc-400">{fileQueue.length} file(s)</span>
@@ -262,7 +262,7 @@ export default function Home() {
         )}
 
         {uploadedFiles.length > 0 && (
-          <div className="max-w-3xl mx-auto ">
+          <div className="max-w-3xl mx-auto">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-2xl font-medium">Uploaded files</h2>
               <span className="text-sm text-zinc-400">{uploadedFiles.length} file(s) ({fileQueue.length} remaining)</span>
@@ -305,7 +305,7 @@ export default function Home() {
             </div>
           </div>
         )}
-      </main>
+      </div>
     </div>
   );
 }

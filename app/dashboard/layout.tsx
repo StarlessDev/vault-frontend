@@ -17,8 +17,10 @@ export default function RootLayout({
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
-        <SidebarTrigger />
+      <main className="flex flex-1 flex-col gap-4 p-4 pt-0 w-full h-screen">
+        <div className="flex gap-3 items-center">
+          <SidebarTrigger />
+        </div>
         {children}
       </main>
     </SidebarProvider>

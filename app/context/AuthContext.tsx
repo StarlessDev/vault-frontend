@@ -100,7 +100,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const refreshTask = () => {
     return retrieveUser().then((user) => {
-      console.log("dio porco")
       setUser(user);
     })
   }

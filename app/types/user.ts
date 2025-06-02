@@ -9,6 +9,7 @@ interface UserUpload {
   fileId: string,
   uploaderId: number,
   fileName: string,
+  size: number,
   uploadDate: number,
   totalDownloads: number,
   lastDownload: number  

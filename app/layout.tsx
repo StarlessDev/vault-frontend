@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 
 import "./globals.css";
-import Header from "@/components/atoms/header";
 import { AuthProvider } from "./context/AuthContext";
 
 export const metadata: Metadata = {
@@ -17,12 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <html className="scroll-smooth">
+      <html className="scroll-smooth" suppressHydrationWarning>
         <head />
         <body>
           <AuthProvider>
             <Toaster />
-            <Header />
             {children}
           </AuthProvider>
         </body>

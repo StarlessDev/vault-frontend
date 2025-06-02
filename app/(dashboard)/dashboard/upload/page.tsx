@@ -15,7 +15,7 @@ import UploadIcon from '@/components/icons/upload';
 import EncryptedFileIcon from '@/components/icons/encryptedfile';
 
 import { Loader2 } from 'lucide-react';
-import CopyIcon from '../../../components/icons/copy';
+import CopyIcon from '../../../../components/icons/copy';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface IndexedFile extends File {

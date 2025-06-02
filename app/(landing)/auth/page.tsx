@@ -31,7 +31,7 @@ import {
 import { toast } from "sonner"
 
 import { loginSchema, registerSchema } from "./formschemas"
-import { useAuth } from "../context/AuthContext"
+import { useAuth } from "@/app/context/AuthContext"
 import { useRouter } from "next/navigation"
 
 export default function LoginPage() {

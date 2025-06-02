@@ -1,3 +1,5 @@
+"use client"
+
 import UserDiv from "@/components/organisms/userdiv"
 import {
   Sidebar,
@@ -10,12 +12,16 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "@/components/ui/sidebar"
+import { cn } from "@/lib/utils"
 import { Home, FolderUp, ChartColumn } from "lucide-react"
 
 import Link from "next/link"
 
 export function AppSidebar() {
+  const { state } = useSidebar();
+
   const items = [
     {
       title: "Home",
@@ -37,12 +43,14 @@ export function AppSidebar() {
   return (
     <Sidebar collapsible="icon">
       <SidebarHeader>
-        <div>
+        <div className="transition-all duration-300">
           <Link
-            className="p-2 text-3xl font-bold text-[var(--primary)] tracking-tighter"
+            className={
+              "text-3xl font-bold text-[var(--primary)] tracking-tighter " + (state === "collapsed" ? "p-1" : "p-2")
+            }
             href="/"
           >
-            VAULT
+            {state === "collapsed" ? "V": "VAULT"}
           </Link>
         </div>
       </SidebarHeader>
@@ -54,7 +62,7 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={"/dashboard/"+ item.url}>
+                    <a href={"/dashboard/" + item.url}>
                       <item.icon />
                       <span>{item.title}</span>
                     </a>
@@ -66,7 +74,11 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <UserDiv />
+        <div className={cn("transition-all duration-300", {
+          "overflow-hidden": state === "collapsed"
+        })}>
+          <UserDiv />
+        </div>
       </SidebarFooter>
     </Sidebar>
   )

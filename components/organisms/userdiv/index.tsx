@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useSidebar } from "@/components/ui/sidebar";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CircleUserRound, EllipsisVertical, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -29,6 +30,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 export default function UserDiv() {
+  const { state } = useSidebar();
   const { user, refresh, logout } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -125,7 +127,9 @@ export default function UserDiv() {
     <Dialog>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <div className="flex items-center p-2 rounded-sm hover:cursor-pointer hover:bg-[var(--accent)]">
+          <div className={"flex items-center rounded-sm hover:cursor-pointer hover:bg-[var(--accent)] "
+            + (state === "collapsed" ? "" : "p-2")
+          }>
             <Avatar>
               <AvatarImage key={lastAvatarUpdate} src={BASE_API + "account/avatar"} />
               <AvatarFallback>

@@ -2,8 +2,7 @@
 
 import { formatFileSize } from "@/app/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { stat } from "fs";
-import { ChartColumn, FolderKey, Server } from "lucide-react";
+import { ChartColumn, FolderKey, HardDriveUpload, Server } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -84,7 +83,7 @@ export default function StatsPage() {
             <CardTitle className="text-sm font-medium">
               You uploaded
             </CardTitle>
-            <FolderKey />
+            <HardDriveUpload />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.userUploadsNumber} File(s)</div>

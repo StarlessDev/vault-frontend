@@ -153,7 +153,7 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <>
       <Head>
         <title>Dashboard - Upload</title>
         <meta name="description" content="File upload with drag and drop" />
@@ -299,6 +299,6 @@ export default function Home() {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

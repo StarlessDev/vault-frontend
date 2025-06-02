@@ -15,3 +15,9 @@ interface UserUpload {
   lastDownload: number  
 }
 
+interface Stats {
+  totalFilesServed: number,
+  totalFileSize: number,
+  userUploadsNumber: number,
+  userUploadsSize: number
+}

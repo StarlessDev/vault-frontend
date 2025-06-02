@@ -54,7 +54,7 @@ export default function DownloadPage() {
     return (
       <div className="flex h-screen items-center justify-center">
         <Card className="w-full max-w-md">
-          <CardHeader className="text-center text-red-500">
+          <CardHeader className="text-center text-red-400">
             File not found or has been removed
           </CardHeader>
         </Card>

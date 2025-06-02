@@ -87,7 +87,7 @@ export default function StatsPage() {
             <FolderKey />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{formatFileSize(stats.userUploadsSize)}</div>
+            <div className="text-2xl font-bold">{stats.userUploadsNumber} File(s)</div>
             <p className="text-xs text-muted-foreground">
               { ((stats.userUploadsNumber / stats.totalFilesServed) * 100).toFixed(2) }% of the total number of files
             </p>

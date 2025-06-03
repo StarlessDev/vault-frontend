@@ -117,13 +117,21 @@ export default function Home() {
           if (processedFiles.length === 0) return null;
 
           const uploadedFile = processedFiles[0];
-          return {
-            index: queuedFile.index,
-            name: queuedFile.name,
-            id: uploadedFile.id,
-            url: FRONTEND_BASE_URL + "download/" + uploadedFile.id + "#" + uploadedFile.fullKey
-          } as UploadedFile;
+          if (uploadedFile.error) {
+            toast("A file could not be uploaded!", {
+              description: uploadedFile.error
+            });
+            return null;
+          } else {
+            return {
+              index: queuedFile.index,
+              name: queuedFile.name,
+              id: uploadedFile.id,
+              url: FRONTEND_BASE_URL + "download/" + uploadedFile.id + "#" + uploadedFile.fullKey
+            } as UploadedFile;
+          }
         }
+
         throw new Error('Upload failed');
       });
     });
@@ -131,12 +139,13 @@ export default function Home() {
     // Handle all uploads
     Promise.all(uploads)
       .then(results => {
-        results.forEach(result => {
-          if (result) {
-            setUploadedFiles(prev => [...prev, result]);
-            setFileQueue(prev => prev.filter(f => f.index !== result.index));
-          }
-        });
+        results.filter((result) => result != null)
+          .forEach(result => {
+            if (result) {
+              setUploadedFiles(prev => [...prev, result]);
+              setFileQueue(prev => prev.filter(f => f.index !== result.index));
+            }
+          });
       })
       .catch(_ => {
         toast("Error", {

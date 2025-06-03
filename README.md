@@ -1,3 +1,4 @@
+# Vault-Frontend
 This is the frontend of the **Vault** project: a small and simple encrypted file hosting. Written for the Web Technologies exam @ [UniMoRe](https://www.unimore.it/it) using NextJS and tailwindcss.
 
 ## Getting Started

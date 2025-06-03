@@ -2,7 +2,7 @@ interface User {
   id: number;
   username: string;
   email: string;
-  uploads?: UserUpload[];
+  uploads: UserUpload[];
 }
 
 interface UserUpload {

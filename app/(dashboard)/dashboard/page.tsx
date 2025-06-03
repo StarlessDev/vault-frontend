@@ -10,24 +10,73 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
+import {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination"
 import { Trash2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function Dashboard() {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [nameFilter, setNameFilter] = useState<string | null>(null);
 
-  if (!isAuthenticated) {
+  const [page, setPage] = useState<number>(0);
+  const pageSize: number = 5;
+
+  // using this instead of isAuthenticated
+  // to avoid typescript bugging me.
+  if (!user) {
     return (
       <></>
     );
   }
 
+  const uploads = user.uploads;
+  const totalPages = Math.ceil(uploads.length / pageSize);
+  const baseIndex = page * pageSize;
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNameFilter(e.target.value.trim());
   };
 
-  const uploads = user?.uploads;
+  const handlePageShift = (next: boolean) => {
+    if (!uploads) return;
+
+    let nextIdx;
+    if (next) {
+      nextIdx = Math.min(totalPages - 1, page + 1);
+    } else {
+      nextIdx = Math.max(0, page - 1);
+    }
+    setPage(nextIdx);
+  }
+
+  const handlePageSet = (idx: number) => {
+    if (idx < 0) {
+      idx = 0;
+    } else if (idx >= totalPages) {
+      idx = totalPages - 1;
+    }
+    setPage(idx);
+  }
+
+  function getPaginationNumbers(): number[] {
+    const totalPages = Math.ceil(uploads.length / pageSize);
+
+    if (page === totalPages - 1) {
+      return [page];
+    }
+
+    // Otherwise show current and next page
+    return [page, page + 1];
+  }
+
   return (
     <div className="container mx-auto px-4">
       <div className="flex flex-col items-center">
@@ -40,15 +89,43 @@ export default function Dashboard() {
           />
         </div>
         <div className="p-4 space-y-2">
-          {uploads === undefined ? <></> : uploads.filter((upload) => {
-            if (nameFilter) {
-              return upload.fileName.includes(nameFilter);
-            }
-            return true;
-          }).map((upload, idx) => {
-            return <UploadSquare key={idx} upload={upload} />
-          })}
+          {uploads === undefined ? <></> : uploads.slice(baseIndex, Math.min(uploads.length - 1, baseIndex + pageSize))
+            .filter((upload) => {
+              if (nameFilter) {
+                return upload.fileName.includes(nameFilter);
+              }
+              return true;
+            }).map((upload, idx) => {
+              return <UploadSquare key={idx} upload={upload} />
+            })}
         </div>
+        <Pagination>
+          <PaginationContent>
+            <PaginationItem>
+              <PaginationPrevious
+                className="hover:cursor-pointer"
+                onClick={() => handlePageShift(false)}
+              />
+            </PaginationItem>
+            {getPaginationNumbers().map(idx => {
+              return <PaginationItem
+                className="hover:cursor-pointer"
+                onClick={() => setPage(idx)}
+              >
+                <PaginationLink>{idx + 1}</PaginationLink>
+              </PaginationItem>
+            })}
+            <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem>
+            <PaginationItem>
+              <PaginationNext
+                className="hover:cursor-pointer"
+                onClick={() => handlePageShift(true)}
+              />
+            </PaginationItem>
+          </PaginationContent>
+        </Pagination>
       </div>
     </div>
   )

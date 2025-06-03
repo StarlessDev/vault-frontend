@@ -109,6 +109,7 @@ export default function Dashboard() {
             </PaginationItem>
             {getPaginationNumbers().map(idx => {
               return <PaginationItem
+                key={idx}
                 className="hover:cursor-pointer"
                 onClick={() => setPage(idx)}
               >

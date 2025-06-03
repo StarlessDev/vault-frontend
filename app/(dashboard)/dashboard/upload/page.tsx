@@ -100,25 +100,29 @@ export default function Home() {
     e.preventDefault();
     setUploading(true);
 
+    const FRONTEND_BASE_URL = process.env.NEXT_PUBLIC_FRONTEND_URL as string;
     const API_BASE_URL: string = process.env.NEXT_PUBLIC_API_URL as string;
-    const UPLOAD_URL: string = API_BASE_URL + "upload";
     const uploads: Promise<UploadedFile | null>[] = fileQueue.map(queuedFile => {
       const fetchBody = new FormData();
       fetchBody.append('file', queuedFile, queuedFile.name);
 
-      return fetch(UPLOAD_URL, {
+      return fetch(API_BASE_URL + "upload", {
         method: 'POST',
         body: fetchBody,
         credentials: 'include',
         mode: 'cors'
       }).then(async (response) => {
         if (response.ok) {
-          const processedFiles: UploadedFile[] = await response.json();
+          const processedFiles = await response.json();
           if (processedFiles.length === 0) return null;
 
-          const uploadedFile: UploadedFile = processedFiles[0];
-          uploadedFile.index = queuedFile.index;
-          return uploadedFile;
+          const uploadedFile = processedFiles[0];
+          return {
+            index: queuedFile.index,
+            name: queuedFile.name,
+            id: uploadedFile.id,
+            url: FRONTEND_BASE_URL + "download/" + uploadedFile.id + "#" + uploadedFile.fullKey
+          } as UploadedFile;
         }
         throw new Error('Upload failed');
       });

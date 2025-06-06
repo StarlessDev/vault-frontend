@@ -99,7 +99,7 @@ export default function Dashboard() {
               return <UploadSquare key={idx} upload={upload} />
             })}
         </div>
-        <Pagination>
+        {uploads.length === 0 ? <></> : <Pagination>
           <PaginationContent>
             <PaginationItem>
               <PaginationPrevious
@@ -126,7 +126,7 @@ export default function Dashboard() {
               />
             </PaginationItem>
           </PaginationContent>
-        </Pagination>
+        </Pagination>}
       </div>
     </div>
   )

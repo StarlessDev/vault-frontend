@@ -89,7 +89,7 @@ export default function Dashboard() {
           />
         </div>
         <div className="p-4 space-y-2">
-          {uploads.length === 0 ? <></> : uploads.slice(baseIndex, Math.min(uploads.length - 1, baseIndex) + pageSize)
+          {uploads.length === 0 ? <></> : uploads.slice(baseIndex, Math.min(uploads.length, baseIndex + pageSize) )
             .filter((upload) => {
               if (nameFilter) {
                 return upload.fileName.includes(nameFilter);

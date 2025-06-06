@@ -89,7 +89,7 @@ export default function Dashboard() {
           />
         </div>
         <div className="p-4 space-y-2">
-          {uploads === undefined ? <></> : uploads.slice(baseIndex, Math.min(uploads.length - 1, baseIndex + pageSize))
+          {uploads.length === 0 ? <></> : uploads.slice(baseIndex, Math.min(uploads.length - 1, baseIndex) + pageSize)
             .filter((upload) => {
               if (nameFilter) {
                 return upload.fileName.includes(nameFilter);
@@ -111,7 +111,7 @@ export default function Dashboard() {
               return <PaginationItem
                 key={idx}
                 className="hover:cursor-pointer"
-                onClick={() => setPage(idx)}
+                onClick={() => handlePageSet(idx)}
               >
                 <PaginationLink>{idx + 1}</PaginationLink>
               </PaginationItem>

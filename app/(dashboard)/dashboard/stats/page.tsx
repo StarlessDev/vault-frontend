@@ -74,7 +74,7 @@ export default function StatsPage() {
           <CardContent>
             <div className="text-2xl font-bold">{formatFileSize(stats.userUploadsSize)}</div>
             <p className="text-xs text-muted-foreground">
-              { ((stats.userUploadsSize / stats.totalFileSize) * 100).toFixed(2) }% of the total
+              { calculatePercentageSafely(stats.userUploadsSize, stats.totalFileSize) }% of the total
             </p>
           </CardContent>
         </Card>
@@ -88,11 +88,18 @@ export default function StatsPage() {
           <CardContent>
             <div className="text-2xl font-bold">{stats.userUploadsNumber} File(s)</div>
             <p className="text-xs text-muted-foreground">
-              { ((stats.userUploadsNumber / stats.totalFilesServed) * 100).toFixed(2) }% of the total number of files
+              { calculatePercentageSafely(stats.userUploadsNumber, stats.totalFilesServed) }% of the total number of files
             </p>
           </CardContent>
         </Card>
       </div>
     </div>
   );
+}
+
+function calculatePercentageSafely(partial: number, total: number) {
+  if (total === 0) {
+    return "0";
+  }
+  return ((partial / total) * 100).toFixed(2);
 }

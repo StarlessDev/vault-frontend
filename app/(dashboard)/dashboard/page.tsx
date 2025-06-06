@@ -107,6 +107,9 @@ export default function Dashboard() {
                 onClick={() => handlePageShift(false)}
               />
             </PaginationItem>
+            {page !== 0 ? <PaginationItem>
+              <PaginationEllipsis />
+            </PaginationItem> : <></>}
             {getPaginationNumbers().map(idx => {
               return <PaginationItem
                 key={idx}
@@ -116,9 +119,9 @@ export default function Dashboard() {
                 <PaginationLink>{idx + 1}</PaginationLink>
               </PaginationItem>
             })}
-            <PaginationItem>
+            {page !== totalPages - 1 ? <PaginationItem>
               <PaginationEllipsis />
-            </PaginationItem>
+            </PaginationItem> : <></>}
             <PaginationItem>
               <PaginationNext
                 className="hover:cursor-pointer"

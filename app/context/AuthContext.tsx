@@ -23,22 +23,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const BASE_API_ENDPOINT: string = process.env.NEXT_PUBLIC_API_URL as string;
 
-  // Get user account on mount
-  useEffect(() => {
-    const userUpdate = async () => {
-      await refreshTask();
-    }
-    userUpdate();
-  }, []);
-
-  useEffect(() => {
-    // weird javascript shenanigan:
-    // (!user) "converts" the user to a boolean and inverts it (!)
-    // and by adding another ! we invert the boolean again.
-    // If the user is null, this will return false.
-    setAuthenticated(!!user);
-  }, [user]);
-
   // Get account info request
   const retrieveUser = async (): Promise<User | null> => {
     setIsLoading(true);
@@ -56,6 +40,25 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setIsLoading(false);
     })
   };
+
+  // Get user account on mount
+  useEffect(() => {
+    const userUpdate = async () => {
+      retrieveUser().then((user) => {
+        setUser(user);
+      })
+    }
+    userUpdate();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Update isAuthenticated field when user changes
+  useEffect(() => {
+    // weird javascript shenanigan:
+    // (!user) "converts" the user to a boolean and inverts it (!)
+    // and by adding another ! we invert the boolean again.
+    // If the user is null, this will return false.
+    setAuthenticated(!!user);
+  }, [user]);
 
   // Login logic
   const login = async (email: string, password: string): Promise<boolean> => {

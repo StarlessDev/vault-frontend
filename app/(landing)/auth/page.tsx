@@ -55,7 +55,7 @@ export default function LoginPage() {
     if (isAuthenticated) {
       router.push("/dashboard");
     }
-  }, []);
+  }, [isAuthenticated, router]);
 
   const cancelInteractionIfLoading = (e: React.MouseEvent) => {
     if (isLoading) {
@@ -69,16 +69,14 @@ export default function LoginPage() {
     setMode(mode);
   }
 
-  const onSubmit = (values: any) => {
+  const onSubmit = (values: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     if (isLoading) return;
 
     // We could check types, but it's a real pain.
     if (mode === "login") {
       const loginData = values as z.infer<typeof loginSchema>
       login(loginData.email, loginData.password).then((logged) => {
-        if (logged) {
-          router.push("/dashboard")
-        } else {
+        if (!logged) {
           toast.error("Login failed!", {
             description: "Check your credentials and retry."
           })

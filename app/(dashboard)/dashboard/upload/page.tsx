@@ -72,7 +72,7 @@ export default function Home() {
 
   const handleFileUpload = (uploadedFiles: File[]): void => {
     if (uploadedFiles.length > 0) {
-      const indexedFiles: IndexedFile[] = uploadedFiles.map((file, idx) => {
+      const indexedFiles: IndexedFile[] = uploadedFiles.map((file) => {
         const idxFile: IndexedFile = file as IndexedFile
         idxFile.index = Math.random() * 1000
         return idxFile
@@ -147,7 +147,7 @@ export default function Home() {
             }
           });
       })
-      .catch(_ => {
+      .catch(() => {
         toast("Error", {
           description: "The upload failed!"
         });

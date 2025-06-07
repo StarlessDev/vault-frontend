@@ -2,7 +2,6 @@
 
 import { formatFileSize } from "@/app/utils";
 import EncryptedFileIcon from "@/components/icons/encryptedfile";
-import FileIcon from "@/components/icons/file";
 import Loader from "@/components/organisms/loader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";

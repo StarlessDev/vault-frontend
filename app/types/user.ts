@@ -1,4 +1,4 @@
-interface User {
+interface User { // eslint-disable-line @typescript-eslint/no-unused-vars
   id: number;
   username: string;
   email: string;
@@ -15,7 +15,7 @@ interface UserUpload {
   lastDownload: number  
 }
 
-interface Stats {
+interface Stats { // eslint-disable-line @typescript-eslint/no-unused-vars
   totalFilesServed: number,
   totalFileSize: number,
   userUploadsNumber: number,

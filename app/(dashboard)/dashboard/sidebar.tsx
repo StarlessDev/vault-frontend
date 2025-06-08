@@ -18,9 +18,11 @@ import { cn } from "@/lib/utils"
 import { Home, FolderUp, ChartColumn } from "lucide-react"
 
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 
 export function AppSidebar() {
   const { state } = useSidebar();
+  const router = useRouter();
 
   const items = [
     {
@@ -62,10 +64,13 @@ export function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={"/dashboard/" + item.url}>
+                    <p onClick={e => {
+                      e.preventDefault();
+                      router.push("/dashboard/" + item.url)
+                    }}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </p>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

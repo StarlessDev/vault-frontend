@@ -108,7 +108,7 @@ export default function DownloadPage() {
 
         <CardFooter>
           <Button
-            className="w-full"
+            className="w-full hover:cursor-pointer"
             size="lg"
             onClick={handleDownload}
             >

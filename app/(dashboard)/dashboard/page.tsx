@@ -181,7 +181,7 @@ function UploadSquare({ upload }: UploadSquare) {
                   {"▪ Uploaded at " + new Date(upload.uploadDate).toLocaleString()}
                 </p>
                 <p className="text-xs text-zinc-400">
-                  {"▪ Downloaded " + upload.totalDownloads + " times"}
+                  {"▪ Downloaded " + (upload.totalDownloads ?? 0) + " times"}
                 </p>
               </div>
             </div>

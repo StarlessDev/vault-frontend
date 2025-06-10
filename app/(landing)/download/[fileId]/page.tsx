@@ -74,9 +74,22 @@ export default function DownloadPage() {
         const link = document.createElement('a');
         link.href = url;
         link.download = upload.fileName;
-        link.click();
 
+        // When in production adding the object
+        // to the DOM is needed for this trick
+        // to work.
+        document.body.appendChild(link);
+        link.click();
         window.URL.revokeObjectURL(url);
+
+        // We need to wait for the download to start
+        setTimeout(() => {
+          document.body.removeChild(link);
+        }, 500);
+      }).catch(() => {
+        toast("Error", {
+          description: "Failed to download file. Please try again."
+        });
       })
     } else {
       toast("Error", {
@@ -111,7 +124,7 @@ export default function DownloadPage() {
             className="w-full hover:cursor-pointer"
             size="lg"
             onClick={handleDownload}
-            >
+          >
             Download
           </Button>
         </CardFooter>

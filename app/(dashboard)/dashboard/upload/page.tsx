@@ -5,7 +5,6 @@ import Head from 'next/head';
 import { Button } from '@/components/ui/button';
 import { toast } from "sonner"
 
-
 import ImageIcon from '@/components/icons/image';
 import VideoIcon from '@/components/icons/video';
 import AudioIcon from '@/components/icons/audio';

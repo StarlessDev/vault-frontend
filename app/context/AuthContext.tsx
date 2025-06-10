@@ -10,6 +10,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<boolean>;
   refresh: () => Promise<void>;
   logout: () => void;
+  addUploadedFile: (upload: UserUpload) => void;
 }
 
 // Create the context
@@ -124,6 +125,13 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     })
   };
 
+  const addUploadedFile = (upload: UserUpload) => {
+    if (user) {
+      user.uploads.push(upload);
+      setUser(user);
+    }
+  }
+
   // Build the object and set it as value
   const contextValue: AuthContextType = {
     user,
@@ -133,6 +141,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     logout,
     refresh: refreshTask,
     register,
+    addUploadedFile
   };
 
   return (

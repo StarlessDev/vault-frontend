@@ -18,19 +18,20 @@ import { Loader2 } from 'lucide-react';
 import CopyIcon from '../../../../components/icons/copy';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatFileSize } from '@/app/utils';
+import { useAuth } from '@/app/context/AuthContext';
 
 interface IndexedFile extends File {
   index: number;
 }
 
-interface UploadedFile {
+interface UploadedFile extends UserUpload {
   index: number;
-  name: string;
-  id: string;
+  fullKey: string;
   url: string;
 }
 
-export default function Home() {
+export default function UploadPage() {
+  const { addUploadedFile } = useAuth();
   // File states
   const [fileQueue, setFileQueue] = useState<IndexedFile[]>([]);
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -123,12 +124,10 @@ export default function Home() {
             });
             return null;
           } else {
-            return {
-              index: queuedFile.index,
-              name: queuedFile.name,
-              id: uploadedFile.id,
-              url: FRONTEND_BASE_URL + "download/" + uploadedFile.id + "#" + uploadedFile.fullKey
-            } as UploadedFile;
+            const userUpload: UploadedFile = uploadedFile;
+            userUpload.index =  queuedFile.index;
+            userUpload.url = FRONTEND_BASE_URL + "download/" + userUpload.fileId + "#" + userUpload.fullKey;
+            return userUpload;
           }
         }
 
@@ -142,6 +141,8 @@ export default function Home() {
         results.filter((result) => result != null)
           .forEach(result => {
             if (result) {
+              addUploadedFile(result);
+
               setUploadedFiles(prev => [...prev, result]);
               setFileQueue(prev => prev.filter(f => f.index !== result.index));
             }
@@ -285,7 +286,7 @@ export default function Home() {
                     </div>
                     {/** File name */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-sm font-medium truncate">{file.name}</h3>
+                      <h3 className="text-sm font-medium truncate">{file.fileName}</h3>
                     </div>
                   </div>
 

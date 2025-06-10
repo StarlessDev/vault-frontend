@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { useAuth } from "../../context/AuthContext";
 import EncryptedFileIcon from "@/components/icons/encryptedfile";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ContextMenu,
   ContextMenuContent,
@@ -24,27 +24,36 @@ import { toast } from "sonner";
 
 export default function Dashboard() {
   const { user } = useAuth();
+  const [uploads, setUploads] = useState<UserUpload[]>(user?.uploads ?? []);
   const [nameFilter, setNameFilter] = useState<string | null>(null);
 
   const [page, setPage] = useState<number>(0);
   const pageSize: number = 5;
 
-  // using this instead of isAuthenticated
-  // to avoid typescript bugging me.
-  if (!user) {
-    return (
-      <></>
-    );
-  }
+  useEffect(() => {
+    if (!user) return;
+    setUploads(user.uploads);
+  }, [user])
 
-  const uploads = user.uploads;
-  const totalPages = Math.ceil(uploads.length / pageSize);
+  const filteredUploads = uploads.filter((upload) => {
+    if (nameFilter) {
+      return upload.fileName.toLowerCase().includes(nameFilter.toLowerCase());
+    }
+    return true;
+  });
+
+  // The total pages must be at least 1
+  const totalPages = Math.max(1, Math.ceil(filteredUploads.length / pageSize));
   const baseIndex = page * pageSize;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNameFilter(e.target.value.trim());
+    // We have no guarantee that there will be more than one page.
+    setPage(0);
   };
 
+  // Used to shift by 1 the pages
+  // when the next/previous buttons are clicked
   const handlePageShift = (next: boolean) => {
     if (!uploads) return;
 
@@ -57,6 +66,7 @@ export default function Dashboard() {
     setPage(nextIdx);
   }
 
+  // Called when a page number is clicked
   const handlePageSet = (idx: number) => {
     if (idx < 0) {
       idx = 0;
@@ -66,9 +76,9 @@ export default function Dashboard() {
     setPage(idx);
   }
 
+  // Used to return the number of the pages
+  // to display in the pagination footer. 
   function getPaginationNumbers(): number[] {
-    const totalPages = Math.ceil(uploads.length / pageSize);
-
     if (page === totalPages - 1) {
       return [page];
     }
@@ -89,15 +99,11 @@ export default function Dashboard() {
           />
         </div>
         <div className="p-4 space-y-2">
-          {uploads.length === 0 ? <></> : uploads.slice(baseIndex, Math.min(uploads.length, baseIndex + pageSize) )
-            .filter((upload) => {
-              if (nameFilter) {
-                return upload.fileName.includes(nameFilter);
-              }
-              return true;
-            }).map((upload, idx) => {
+          { filteredUploads.length === 0 ? <></> : filteredUploads
+            .slice(baseIndex, Math.min(filteredUploads.length, baseIndex + pageSize))
+            .map((upload, idx) => {
               return <UploadSquare key={idx} upload={upload} />
-            })}
+            }) }
         </div>
         {uploads.length === 0 ? <></> : <Pagination>
           <PaginationContent>

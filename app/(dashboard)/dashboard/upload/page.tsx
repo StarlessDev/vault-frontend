@@ -67,6 +67,8 @@ export default function UploadPage() {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files) as File[];
       handleFileUpload(selectedFiles);
+
+      e.target.value = '';
     }
   };
 

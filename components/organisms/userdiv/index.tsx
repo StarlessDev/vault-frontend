@@ -132,9 +132,7 @@ export default function UserDiv() {
           }>
             <Avatar>
               <AvatarImage key={lastAvatarUpdate} src={BASE_API + "account/avatar"} />
-              <AvatarFallback>
-                <Skeleton className="h-4 w-4" />
-              </AvatarFallback>
+              <AvatarFallback>{user?.username.slice(-1).toUpperCase()}</AvatarFallback>
             </Avatar>
             <div className="ml-4 flex-1">
               <p className="font-medium truncate">{user?.username}</p>

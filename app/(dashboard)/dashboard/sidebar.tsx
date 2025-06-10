@@ -52,7 +52,7 @@ export function AppSidebar() {
             }
             href="/"
           >
-            {state === "collapsed" ? "V": "VAULT"}
+            {state === "collapsed" ? "V" : "VAULT"}
           </Link>
         </div>
       </SidebarHeader>
@@ -63,7 +63,10 @@ export function AppSidebar() {
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    className="hover:cursor-pointer"
+                    asChild
+                  >
                     <p onClick={e => {
                       e.preventDefault();
                       router.push("/dashboard/" + item.url)

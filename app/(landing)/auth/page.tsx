@@ -222,7 +222,7 @@ export default function LoginPage() {
                         <FormItem>
                           <FormLabel>Confirm Password</FormLabel>
                           <FormControl>
-                            <Input type="cfpassword" {...field} />
+                            <Input type="password" {...field} />
                           </FormControl>
                         </FormItem>
                       )}

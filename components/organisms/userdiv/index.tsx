@@ -57,8 +57,8 @@ export default function UserDiv() {
   }, [user])
 
   // Logout logic
-  const onLogout = () => {
-    logout();
+  const onLogout = async () => {
+    await logout();
     router.push("/auth");
   }
 

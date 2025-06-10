@@ -9,7 +9,7 @@ interface AuthContextType {
   register: (username: string, email: string, password: string) => Promise<boolean>;
   login: (email: string, password: string) => Promise<boolean>;
   refresh: () => Promise<void>;
-  logout: () => void;
+  logout: () => Promise<void>;
   addUploadedFile: (upload: UserUpload) => void;
 }
 
